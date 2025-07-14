@@ -1,0 +1,130 @@
+import React, { useState } from 'react'
+import { 
+  Alert, 
+  StyleSheet, 
+  View, 
+  Keyboard, 
+  TouchableWithoutFeedback,
+  Image
+} from 'react-native'
+import { supabase } from '../utils/supabase'
+import TextInput from '../components/TextInput'
+import Button from '../components/Button'
+import Dialog from '../components/Dialog'
+
+
+export default function AuthScreen() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [showSignUpDialog, setShowSignUpDialog] = useState(false);
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+
+  async function signInWithEmail() {
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <View style={{ flexDirection: 'column', gap: 12 }}>  
+            <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" />
+            <TextInput
+              onChangeText={(text: string) => setEmail(text)}
+              value={email}
+              placeholder="Email"
+            />
+            <TextInput
+              onChangeText={(text: string) => setPassword(text)}
+              value={password}
+              placeholder="Password"
+            />
+          </View>
+          <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
+            <Button title="Sign in" onPress={signInWithEmail} />
+            <Button title="Sign up" variant="text" onPress={() => setShowSignUpDialog(true)} />
+          </View>
+        </View>
+        {showSignUpDialog && (
+          <Dialog
+            visible={showSignUpDialog}
+            onClose={() => setShowSignUpDialog(false)}
+            animationType="none"
+          >
+           <View style={styles.container}>
+            <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" />
+              <TextInput
+                onChangeText={setSignUpEmail}
+                value={signUpEmail}
+                placeholder="Email"
+              />
+              <TextInput
+                onChangeText={setSignUpPassword}
+                value={signUpPassword}
+                placeholder="Password"
+              />
+              <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
+                <Button
+                  title="Sign up"
+                  disabled={loading}
+                  onPress={async () => {
+                    setLoading(true);
+                    const { data: { session }, error } = await supabase.auth.signUp({
+                      email: signUpEmail,
+                      password: signUpPassword,
+                    });
+                    if (error) Alert.alert(error.message);
+                    if (!session) Alert.alert('Please check your inbox for email verification!');
+                    setLoading(false);
+                    setShowSignUpDialog(false);
+                  }}
+                />
+                <Button
+                  title="Cancel"
+                  variant="text"
+                  onPress={() => setShowSignUpDialog(false)}
+                />
+              </View>
+            </View>
+          </Dialog>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 170,
+    padding: 12,
+    alignSelf: 'center',
+    gap: 12,
+  },
+  verticallySpaced: {
+    paddingTop: 4,
+    paddingBottom: 4,
+  },
+  mt20: {
+    marginTop: 50,
+  },
+  customButton: {
+    borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+})
