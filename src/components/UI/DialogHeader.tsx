@@ -44,15 +44,6 @@ const DialogHeader: React.FC<DialogHeaderProps> = ({
     <>
       <View style={[styles.container, style]}>
         <View style={styles.left}>
-          {backAction && (
-            <TouchableOpacity
-              onPress={onBackAction}
-              style={styles.backButton}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <Ionicons name="arrow-back" size={20} color="#fff" />
-            </TouchableOpacity>
-          )}
           {typeof title === "string" ? (
             <Text
               style={[styles.title, titleStyle, { fontSize: titleFontSize }]}
@@ -63,16 +54,7 @@ const DialogHeader: React.FC<DialogHeaderProps> = ({
           ) : (
             title
           )}
-          {titleButtonComponent && (
-            <View style={styles.titleButton}>{titleButtonComponent}</View>
-          )}
         </View>
-        <TouchableOpacity
-          style={styles.center}
-          activeOpacity={0.7}
-          onPress={onHeaderPress}
-          disabled={!headerAsButton}
-        ></TouchableOpacity>
         <View style={styles.right}>
           {rightActionElement &&
             (typeof rightActionElement === "string" ? (
@@ -85,7 +67,6 @@ const DialogHeader: React.FC<DialogHeaderProps> = ({
                     styles.rightActionText,
                     {
                       fontSize: rightActionFontSize,
-                      textDecorationLine: "underline",
                     },
                   ]}
                 >
@@ -142,6 +123,8 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flexShrink: 1,
+    fontFamily: 'Inter-Regular',
+    
   },
   titleButton: {
     marginLeft: 8,
@@ -155,6 +138,11 @@ const styles = StyleSheet.create({
     color: "colors.primary",
     fontSize: 18,
     fontWeight: "400",
+    borderWidth: 1,
+    borderColor: 'lightgrey',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginRight: 4,
   },
   bottomBorder: {
     width: "90%",

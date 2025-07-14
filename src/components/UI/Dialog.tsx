@@ -55,7 +55,7 @@ const Dialog: React.FC<DialogProps> = ({
             onPress={onClose}
           />
         )}
-        {/* <Animated.View
+        <Animated.View
           style={[
             styles.container,
             {
@@ -63,7 +63,7 @@ const Dialog: React.FC<DialogProps> = ({
               transform: [{ translateY: pan.y }],
             },
           ]}
-        > */}
+        >
           <View
             style={{
               flex: 1,
@@ -78,7 +78,7 @@ const Dialog: React.FC<DialogProps> = ({
             {headerProps && <DialogHeader {...headerProps} />}
             <View style={[styles.content]}>{children}</View>
           </View>
-        {/* </Animated.View> */}
+        </Animated.View>
       </View>
     </Modal>
   );

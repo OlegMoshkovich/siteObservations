@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import ViewShot from 'react-native-view-shot';
-import Dialog from './Dialog';
+import Dialog from './UI/Dialog';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,7 +38,7 @@ const PlanWidget: React.FC<PlanWidgetProps> = ({ onAnchorChange }) => {
 
   return (
     <View style={{ backgroundColor: 'white', width: '100%', height: 300 }}>
-      <View style={{ width: '96%', height: 300, borderWidth: 1, borderColor: 'grey', borderRadius: 0, overflow: 'hidden', alignSelf: 'center' }}>
+      <View style={{ width: '100%', height: 300, borderWidth: 1, borderColor: 'grey', borderRadius: 0, overflow: 'hidden', alignSelf: 'center' }}>
         <ViewShot
           ref={viewShotRef}
           options={{ format: 'png', quality: 1, result: 'tmpfile' }}
@@ -70,7 +70,7 @@ const PlanWidget: React.FC<PlanWidgetProps> = ({ onAnchorChange }) => {
                       height: 12,
                       borderRadius: 15,
                       borderWidth: 3,
-                      borderColor: 'blue',
+                      borderColor: 'red',
                     //   backgroundColor: 'rgba(255,0,0,0.2)',
                       pointerEvents: 'none',
                     }}

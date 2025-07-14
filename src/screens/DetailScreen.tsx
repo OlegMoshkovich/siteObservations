@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import TextInput from '../components/TextInput';
+import TextInput from '../components/UI/TextInput';
 import { useState } from 'react';
-import Checkbox from '../components/Checkbox';
-import Dropdown from '../components/Dropdown';
-import Button from '../components/Button';
-import IconButton from '../components/IconButton';
-import PlanWidget from '../components/PlanWidget';
+import Checkbox from '../components/UI/Checkbox';
+import Dropdown from '../components/UI/Dropdown';
+import Button from '../components/UI/Button';
+import IconButton from '../components/UI/IconButton';
+import PlanWidget from '../components/UI/PlanWidget';
 
 export default function DetailScreen() {
   const [description, setDescription] = useState('');

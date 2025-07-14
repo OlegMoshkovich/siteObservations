@@ -5,12 +5,13 @@ import {
   View, 
   Keyboard, 
   TouchableWithoutFeedback,
-  Image
+  Image,
+  Text
 } from 'react-native'
 import { supabase } from '../utils/supabase'
-import TextInput from '../components/TextInput'
-import Button from '../components/Button'
-import Dialog from '../components/Dialog'
+import TextInput from '../components/UI/TextInput'
+import Button from '../components/UI/Button' 
+import Dialog from '../components/UI/Dialog'
 
 
 export default function AuthScreen() {
@@ -27,16 +28,26 @@ export default function AuthScreen() {
       email: email,
       password: password,
     })
-
+    
     if (error) Alert.alert(error.message)
     setLoading(false)
   }
+  async function signUpWithEmail() {
+    setLoading(true);
+    const { data: { session }, error } = await supabase.auth.signUp({
+      email: signUpEmail,
+      password: signUpPassword,
+    });
+    if (error) Alert.alert(error.message);
+    if (!session) Alert.alert('Please check your inbox for email verification!');
+    setLoading(false);
+    setShowSignUpDialog(false);
+    }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <View style={{ flexDirection: 'column', gap: 12 }}>  
+        <View style={styles.container}> 
             <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" />
             <TextInput
               onChangeText={(text: string) => setEmail(text)}
@@ -46,22 +57,28 @@ export default function AuthScreen() {
             <TextInput
               onChangeText={(text: string) => setPassword(text)}
               value={password}
+              password={true}
               placeholder="Password"
             />
-          </View>
           <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
-            <Button title="Sign in" onPress={signInWithEmail} />
-            <Button title="Sign up" variant="text" onPress={() => setShowSignUpDialog(true)} />
+            <Button title="Sign in" onPress={signInWithEmail} disabled={loading || !email || !password} />
+            <Button title="Sign up" 
+            variant="text" 
+            onPress={() => setShowSignUpDialog(true)} />
           </View>
         </View>
         {showSignUpDialog && (
           <Dialog
             visible={showSignUpDialog}
             onClose={() => setShowSignUpDialog(false)}
-            animationType="none"
+            animationType="slide"
+
           >
            <View style={styles.container}>
-            <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" />
+            {/* <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" /> */}
+              <View style={{ flexDirection: 'column', gap: 12, alignItems: 'center', marginTop: 30, marginBottom: 20 }}>  
+                <Text style={{ fontSize: 16, textAlign: 'center' }}>Please Sign up</Text>
+              </View>
               <TextInput
                 onChangeText={setSignUpEmail}
                 value={signUpEmail}
@@ -71,22 +88,13 @@ export default function AuthScreen() {
                 onChangeText={setSignUpPassword}
                 value={signUpPassword}
                 placeholder="Password"
+                password={true}
               />
               <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
                 <Button
                   title="Sign up"
-                  disabled={loading}
-                  onPress={async () => {
-                    setLoading(true);
-                    const { data: { session }, error } = await supabase.auth.signUp({
-                      email: signUpEmail,
-                      password: signUpPassword,
-                    });
-                    if (error) Alert.alert(error.message);
-                    if (!session) Alert.alert('Please check your inbox for email verification!');
-                    setLoading(false);
-                    setShowSignUpDialog(false);
-                  }}
+                  onPress={signUpWithEmail}
+                  disabled={loading || !signUpEmail || !signUpPassword}
                 />
                 <Button
                   title="Cancel"
@@ -94,7 +102,8 @@ export default function AuthScreen() {
                   onPress={() => setShowSignUpDialog(false)}
                 />
               </View>
-            </View>
+              </View>
+
           </Dialog>
         )}
       </View>

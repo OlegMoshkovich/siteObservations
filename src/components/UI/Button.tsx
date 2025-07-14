@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#000000',
   },
   outlinedDisabled: {
     borderColor: '#ccc',
