@@ -10,12 +10,11 @@ import { Text } from 'react-native';
 import { useUserStore } from '../state/slices/userSlice';
 import { downloadPhoto, fetchObservationDates, fetchUserObservations } from '../utils/supabase';
 import { useObservationStore } from '../state/slices/observationSlice';
-import { useFocusEffect } from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator({ session }: { session: Session | null }) {
   const { user, setUser } = useUserStore();
-  const {  observationDates,setObservationDates , setObservations, observations, setPhotos } = useObservationStore();
+  const { setObservationDates , setObservations, setPhotos } = useObservationStore();
   useEffect(() => {
     setUser(session?.user);
   }, [session]);
@@ -32,10 +31,6 @@ export default function TabNavigator({ session }: { session: Session | null }) {
               return { ...photo, dataUrl: null };
             }
             const fileData = await downloadPhoto(photo.photo_url);
-            // const { data: fileData, error: fileError } = await supabase.storage.from('photos').download(photo.photo_url);
-            // if (fileError || !fileData) {
-            //   return { ...photo, dataUrl: null };
-            // }
             const fr = new FileReader();
             return await new Promise<any>((resolve) => {
               fr.onload = () => {
@@ -48,7 +43,7 @@ export default function TabNavigator({ session }: { session: Session | null }) {
           }
         })
       );
-      setObservationDates(uniqueSortedDates);
+      setObservationDates(uniqueSortedDates as string[]);
       setObservations(observations);
       setPhotos(photosWithDataUrl);
     };

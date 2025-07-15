@@ -11,13 +11,15 @@ import Dialog from '../components/UI/Dialog';
 import { format, parse } from 'date-fns';   
 import PhotoItem from '../features/PhotoItem';    
 import Button from '../components/UI/Button';
-import { useUserStore } from '../state/slices/userSlice';
 import { useObservationStore } from '../state/slices/observationSlice';
+import { useUIStore } from '../state/slices/uiSlice';
+import { formatObservationDate } from '../utils/dateUtils';
 
 export default function AccessScreen() {
-  const [selectedDate, setSelectedDate] = useState('');
+  const { selectedDate, setSelectedDate } = useUIStore();
   const [dialogVisible, setDialogVisible] = useState(false);
   const { observationDates, photos } = useObservationStore();
+  console.log('selectedDate', selectedDate);
 
   return (
     <View style={styles.container}>
@@ -31,7 +33,7 @@ export default function AccessScreen() {
           observationDates.map((date) => (
             <Button
               key={date + 'date'}
-              title={date}
+              title={formatObservationDate(date)}
               variant="outlined"
               onPress={() => {
                 setSelectedDate(date);
