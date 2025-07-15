@@ -37,8 +37,8 @@ const DialogHeader: React.FC<DialogHeaderProps> = ({
   headerAsButton,
   onHeaderPress,
   bottomBorder = true,
-  titleFontSize = 18,
-  rightActionFontSize = 18,
+  titleFontSize = 16,
+  rightActionFontSize = 16,
 }) => {
   return (
     <>

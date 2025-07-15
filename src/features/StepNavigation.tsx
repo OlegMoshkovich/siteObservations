@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import Button from "./UI/Button";
+import Button from "../components/UI/Button";
 
 export const StepNavigationButtons: React.FC<{
   onBack?: () => void;

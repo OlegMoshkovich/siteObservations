@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import ViewShot from 'react-native-view-shot';
-import Dialog from './UI/Dialog';
+import Dialog from '../components/UI/Dialog';
 
 const { width, height } = Dimensions.get('window');
 
@@ -70,7 +70,7 @@ const PlanWidget: React.FC<PlanWidgetProps> = ({ onAnchorChange }) => {
                       height: 12,
                       borderRadius: 15,
                       borderWidth: 3,
-                      borderColor: 'red',
+                      borderColor: 'red ',
                     //   backgroundColor: 'rgba(255,0,0,0.2)',
                       pointerEvents: 'none',
                     }}

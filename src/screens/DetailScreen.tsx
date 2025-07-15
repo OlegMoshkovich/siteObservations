@@ -6,7 +6,7 @@ import Checkbox from '../components/UI/Checkbox';
 import Dropdown from '../components/UI/Dropdown';
 import Button from '../components/UI/Button';
 import IconButton from '../components/UI/IconButton';
-import PlanWidget from '../components/UI/PlanWidget';
+import PlanWidget from '../features/PlanWidget';
 
 export default function DetailScreen() {
   const [description, setDescription] = useState('');

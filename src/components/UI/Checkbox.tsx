@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 interface CheckboxProps {
-  label: string;
+  label?: string;
   checked: boolean;
   onToggle: (checked: boolean) => void;
 }

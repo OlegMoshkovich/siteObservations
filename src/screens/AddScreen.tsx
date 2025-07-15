@@ -12,7 +12,7 @@ import { supabase } from '../utils/supabase';
 import Dialog from '../components/UI/Dialog';
 import Button from '../components/UI/Button';
 import { exifDateToPostgres } from '../utils/dateUtils';
-import CreateObservationWidget from '../components/CreateObservationWidget';
+import CreateObservationWidget from '../features/CreateObservationWidget';
 
 export default function AddScreen() {
   // ...existing state and logic for AddScreen...
@@ -102,6 +102,7 @@ export default function AddScreen() {
         const { status: locStatus } = await Location.requestForegroundPermissionsAsync();
         if (locStatus === 'granted') {
           const location = await Location.getCurrentPositionAsync({});
+          console.log('location --', location);
           setPhotoLocation({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -167,17 +168,19 @@ export default function AddScreen() {
       console.log('pendingTitle', pendingTitle);
       console.log('pendingUpload', pendingUpload);
       // console.log('uploading', uploading);
-      const { error: insertError } = await supabase.from('photos').insert([
+
+      
+      const { error: insertError } = await supabase.from('observations').insert([
         {
-          project_id: null,
           user_id: user.id,
-          url: uploadData?.path,
           note: pendingNote,
-          latitude: photoLocation ? photoLocation.latitude : null,
-          longitude: photoLocation ? photoLocation.longitude : null,
-          anchor: anchor ? { x: anchor.x, y: anchor.y } : null,
-          labels: labels,
-          taken_at: pendingTakenAt,
+          gps_lat: photoLocation ? photoLocation.latitude : null,
+          gps_lng: photoLocation ? photoLocation.longitude : null,
+          photo_url: uploadData?.path ?? null,
+          plan_url: null,
+          plan_anchor: anchor ? { x: anchor.x, y: anchor.y } : null,
+          photo_date: pendingTakenAt ? pendingTakenAt.split('T')[0] : null, // expects date (YYYY-MM-DD)
+          // created_at will default to now()
         },
       ]);
 
@@ -227,7 +230,7 @@ function blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
           setSavingNote(false);
         }}
         headerProps={{
-          title: 'Observation widget',
+          title: 'Create observation',
           style: { paddingHorizontal: 16 },
           rightActionFontSize: 15,
           bottomBorder: false,

@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AuthScreen from '../screens/AuthScreen';
 import AddScreen from '../screens/AddScreen';
 import AccessScreen from '../screens/AccessScreen';
 import ProfileScreen from '../screens/ProfileScreen';

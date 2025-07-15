@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native';
 import { StepNavigationButtons } from './StepNavigation';
-import PlanWidget from '../components/PlanWidget';
+import PlanWidget from './PlanWidget';
 
 interface CreateObservationWidgetProps {
   visible: boolean;
@@ -155,7 +155,7 @@ const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
               minHeight: 300,
               borderWidth: 1,
               borderColor: '#ccc',
-              borderRadius: 4,
+            //   borderRadius: 4,
               paddingHorizontal: 12,
               marginBottom: 16,
               fontSize: 16,
