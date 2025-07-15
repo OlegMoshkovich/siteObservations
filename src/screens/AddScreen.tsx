@@ -14,6 +14,7 @@ import Button from '../components/UI/Button';
 import { exifDateToPostgres } from '../utils/dateUtils';
 import CreateObservationWidget from '../features/CreateObservationWidget';
 import { useUserStore } from '../state/slices/userSlice';
+import { useObservationStore } from '../state/slices/observationSlice';
 
 export default function AddScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -23,6 +24,8 @@ export default function AddScreen() {
   const [dialogMode, setDialogMode] = useState<'photo' | 'note' | null>(null);
   const [photoLocation, setPhotoLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [pendingTakenAt, setPendingTakenAt] = useState<string | null>(null);
+  const { observations, setObservations, photos, setPhotos } = useObservationStore();
+
   const { user } = useUserStore();
 
   const askForLibraryPermission = async () => {
@@ -159,6 +162,7 @@ export default function AddScreen() {
 
       try {
         photoUrl = await uploadPhoto(arraybuffer, filename);
+
       } catch (uploadError: any) {
         Alert.alert('Upload failed', uploadError.message || String(uploadError));
         return;
@@ -174,7 +178,8 @@ export default function AddScreen() {
         return;
       }
 
-      const { error: insertError } = await supabase.from('observations').insert([
+      // Insert the new observation into the database and also update the local observations state
+      const { data: insertedData, error: insertError } = await supabase.from('observations').insert([
         {
           user_id: user.id,
           note: pendingNote,
@@ -185,7 +190,13 @@ export default function AddScreen() {
           plan_anchor: anchor ? { x: anchor.x, y: anchor.y } : null,
           photo_date: pendingTakenAt ? pendingTakenAt.split('T')[0] : null, // expects date (YYYY-MM-DD)
         },
-      ]);
+      ]).select();
+
+      if (insertedData && insertedData.length > 0) {
+        // Add the new observation to the local observations state immediately
+  
+        setObservations([...(observations ?? []), insertedData[0]]);
+      }
 
       if (insertError) {
         Alert.alert('DB insert failed', insertError.message);
