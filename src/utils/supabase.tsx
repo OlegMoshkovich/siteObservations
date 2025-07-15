@@ -55,3 +55,8 @@ export async function updateObservationPhotoUrl(observationId: string, photoUrl:
   const { error } = await supabase.from('observations').update({ photo_url: photoUrl }).eq('id', observationId);
   if (error) throw error;
 }
+
+export async function getCurrentUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
