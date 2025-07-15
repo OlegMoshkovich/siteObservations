@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image, StyleSheet } from 'react-native';
 import { StepNavigationButtons } from './StepNavigation';
 import PlanWidget from './PlanWidget';
 
@@ -12,7 +12,6 @@ interface CreateObservationWidgetProps {
   onUpload: (data: { anchor: { x: number; y: number } | null; labels: string[] }) => void;
   onClose: () => void;
 }
-
 
 const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
   visible,
@@ -82,63 +81,49 @@ const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={{ alignItems: 'center', justifyContent: 'flex-start', flex: 1, width: '100%' }}>
+      <View style={styles.container}>
         {step === 1 && (
           <Image
             source={{ uri: imageUri }}
-            style={{ width: '90%', height: 300, borderRadius: 0, marginBottom: 10 }}
+            style={styles.image}
             resizeMode="cover"
           />
         )}
         {step === 2 && (
-          <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between', width: '90%' }}>
+          <View style={styles.planWidgetContainer}>
             <PlanWidget onAnchorChange={setAnchor} />
           </View>
         )}
         {step === 3 && (
-          <View style={{ 
-            flexDirection: 'row', 
-            flexWrap: 'wrap', 
-            justifyContent: 'center', 
-            marginTop: 60, 
-            borderRadius: 4, 
-            paddingBottom: 50,  
-            width: '90%', 
-            alignSelf: 'center'  
-            }}
-            >
+          <View style={styles.labelsContainer}>
             {roomLabels.map((label) => (
               <TouchableOpacity
                 key={label}
                 onPress={() => toggleLabel(label)}
-                style={{
-                  backgroundColor: selectedLabels.includes(label) ? 'black' : 'white',
-                  borderColor: 'black',
-                  borderWidth: 1,
-                  borderRadius: 0,
-                  paddingHorizontal: 14,
-                  paddingVertical: 6,
-                  margin: 4,
-                }}
+                style={[
+                  styles.labelPill,
+                  selectedLabels.includes(label) ? styles.labelPillSelected : styles.labelPillUnselected,
+                ]}
               >
-                <Text style={{ color: selectedLabels.includes(label) ? 'white' : 'black', fontWeight: 'bold' }}>{label}</Text>
+                <Text style={[
+                  styles.labelPillText,
+                  selectedLabels.includes(label) ? styles.labelPillTextSelected : styles.labelPillTextUnselected,
+                ]}>{label}</Text>
               </TouchableOpacity>
             ))}
             {statusLabels.map((label) => (
               <TouchableOpacity
                 key={label}
                 onPress={() => toggleLabel(label)}
-                style={{
-                  backgroundColor: selectedLabels.includes(label) ? 'red' : 'white',
-                  borderColor: 'red',
-                  borderWidth: 1,
-                  borderRadius: 0,
-                  paddingHorizontal: 14,
-                  paddingVertical: 6,
-                  margin: 4,
-                }}
+                style={[
+                  styles.statusPill,
+                  selectedLabels.includes(label) ? styles.statusPillSelected : styles.statusPillUnselected,
+                ]}
               >
-                <Text style={{ color: selectedLabels.includes(label) ? 'white' : 'red', fontWeight: 'bold' }}>{label}</Text>
+                <Text style={[
+                  styles.statusPillText,
+                  selectedLabels.includes(label) ? styles.statusPillTextSelected : styles.statusPillTextUnselected,
+                ]}>{label}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -149,29 +134,12 @@ const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
             value={note}
             onChangeText={onNoteChange}
             multiline={true}
-            style={{
-              width: '90%',
-              minHeight: 300,
-              borderWidth: 1,
-              borderColor: '#ccc',
-            //   borderRadius: 4,
-              paddingHorizontal: 12,
-              marginBottom: 16,
-              fontSize: 16,
-              backgroundColor: '#fafafa',
-            }}
+            style={styles.noteInput}
             editable={!uploading}
           />
         )}
-        <View style={{ 
-            position: 'absolute',
-            top: 320,
-            left: 0,
-            right: 0,
-            alignSelf: 'center',
-        }}
-        >
-        <StepNavigationButtons
+        <View style={styles.navigationContainer}>
+          <StepNavigationButtons
             onBack={onBack}
             onNext={onNext}
             backDisabled={backDisabled}
@@ -180,12 +148,107 @@ const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
             showNext={showNext}
             nextLabel={nextLabel}
             style={{ marginTop: 10, marginBottom: 4 }}
-        />
+          />
         </View>
-
       </View>
     </TouchableWithoutFeedback>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 1,
+    width: '100%',
+  },
+  image: {
+    width: '90%',
+    height: 300,
+    borderRadius: 0,
+    marginBottom: 10,
+  },
+  planWidgetContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+    justifyContent: 'space-between',
+    width: '90%',
+  },
+  labelsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 60,
+    borderRadius: 4,
+    paddingBottom: 50,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  labelPill: {
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 0,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    margin: 4,
+    backgroundColor: 'white',
+  },
+  labelPillSelected: {
+    backgroundColor: 'black',
+  },
+  labelPillUnselected: {
+    backgroundColor: 'white',
+  },
+  labelPillText: {
+    fontWeight: 'bold',
+  },
+  labelPillTextSelected: {
+    color: 'white',
+  },
+  labelPillTextUnselected: {
+    color: 'black',
+  },
+  statusPill: {
+    borderColor: 'red',
+    borderWidth: 1,
+    borderRadius: 0,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    margin: 4,
+    backgroundColor: 'white',
+  },
+  statusPillSelected: {
+    backgroundColor: 'red',
+  },
+  statusPillUnselected: {
+    backgroundColor: 'white',
+  },
+  statusPillText: {
+    fontWeight: 'bold',
+  },
+  statusPillTextSelected: {
+    color: 'white',
+  },
+  statusPillTextUnselected: {
+    color: 'red',
+  },
+  noteInput: {
+    width: '90%',
+    minHeight: 300,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    fontSize: 16,
+    backgroundColor: '#fafafa',
+  },
+  navigationContainer: {
+    position: 'absolute',
+    top: 320,
+    left: 0,
+    right: 0,
+    alignSelf: 'center',
+  },
+});
 
 export default CreateObservationWidget; 

@@ -8,7 +8,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as Location from 'expo-location';
-import { supabase } from '../utils/supabase';
+import { supabase, uploadPhoto } from '../utils/supabase';
 import Dialog from '../components/UI/Dialog';
 import Button from '../components/UI/Button';
 import { exifDateToPostgres } from '../utils/dateUtils';
@@ -16,24 +16,15 @@ import CreateObservationWidget from '../features/CreateObservationWidget';
 import { useUserStore } from '../state/slices/userSlice';
 
 export default function AddScreen() {
-  // ...existing state and logic for AddScreen...
-  // (You can re-add any state or handlers you need for your actual upload logic)
-
-  // Example placeholder handlers:
   const [dialogVisible, setDialogVisible] = useState(false);
   const [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
-  const [pendingTitle, setPendingTitle] = useState('');
   const [pendingNote, setPendingNote] = useState('');
   const [pendingUpload, setPendingUpload] = useState(false);
   const [dialogMode, setDialogMode] = useState<'photo' | 'note' | null>(null);
-  const [pendingNoteTitle, setPendingNoteTitle] = useState('');
-  const [pendingNoteContent, setPendingNoteContent] = useState('');
-  const [savingNote, setSavingNote] = useState(false);
   const [photoLocation, setPhotoLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [pendingTakenAt, setPendingTakenAt] = useState<string | null>(null);
   const { user } = useUserStore();
 
-  // Permission helpers
   const askForLibraryPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -61,7 +52,6 @@ export default function AddScreen() {
     return true;
   };
 
-  // Helper to compress an image and return the compressed Blob and its size
   async function compressImage(imageUri: string): Promise<{ blob: Blob; size: number; uri: string }> {
     const compressed = await ImageManipulator.manipulateAsync(
       imageUri,
@@ -73,35 +63,24 @@ export default function AddScreen() {
     return { blob: compressedBlob, size: compressedBlob.size, uri: compressed.uri };
   }
   
-  // Helper to reset all AddScreen state
   function resetState() {
     setPendingImageUri(null);
     setDialogVisible(false);
-    setPendingTitle('');
     setPendingNote('');
     setPendingUpload(false);
     setPhotoLocation(null);
     setPendingTakenAt(null);
     setDialogMode(null);
-    setPendingNoteTitle('');
-    setPendingNoteContent('');
-    setSavingNote(false);
   }
 
-  // Helper to set state after picking an image
   function setPickedImageState(imageUri: string, takenAt: string | null) {
     setPendingImageUri(imageUri);
     setDialogVisible(true);
-    setPendingTitle('');
     setPendingNote('');
     setPendingUpload(false);
     setPendingTakenAt(takenAt);
     setDialogMode('photo');
-    setPendingNoteTitle('');
-    setPendingNoteContent('');
-    setSavingNote(false);
   }
-
 
   const handlePickAndUpload = async () => {
     setDialogMode('photo');
@@ -120,7 +99,6 @@ export default function AddScreen() {
       const takenAtRaw = image.exif?.DateTimeOriginal || image.exif?.DateTime || null;
       const takenAt = exifDateToPostgres(takenAtRaw);
       setPickedImageState(image.uri, takenAt);
-      // Get location permission and current location
       const hasLocPermission = await askForLocationPermission();
       if (hasLocPermission) {
         try {
@@ -152,7 +130,6 @@ export default function AddScreen() {
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const image = result.assets[0];
       setPickedImageState(image.uri, null);
-      // Get location permission and current location
       const hasLocPermission = await askForLocationPermission();
       if (hasLocPermission) {
         try {
@@ -172,55 +149,43 @@ export default function AddScreen() {
   
   const handleUpload = async ({ anchor, labels }: { anchor: { x: number; y: number } | null; labels: string[] }) => {
     if (!pendingImageUri) return;
-    // setUploading(true);
     setPendingUpload(true);
     try {
-      // Get original image size
-      const originalResponse = await fetch(pendingImageUri);
-      const originalBlob = await originalResponse.blob();
-      const originalSize = originalBlob.size;
-
-      // Compress the image using the helper
       const { blob: compressedBlob, size: compressedSize, uri: compressedUri } = await compressImage(pendingImageUri);
-
-      // Use FileReader to get ArrayBuffer
       const arraybuffer = await blobToArrayBuffer(compressedBlob);
       const fileExt = compressedUri.split('.').pop()?.toLowerCase() ?? 'jpeg';
       const filename = `${Date.now()}.${fileExt}`;
+      let photoUrl;
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('photos')
-        .upload(filename, arraybuffer, {
-          contentType: 'image/jpeg',
-        });
-
-      if (uploadError) {
-        Alert.alert('Upload failed', uploadError.message);
+      try {
+        photoUrl = await uploadPhoto(arraybuffer, filename);
+      } catch (uploadError: any) {
+        Alert.alert('Upload failed', uploadError.message || String(uploadError));
         return;
       }
 
+      if (!photoUrl) {
+        Alert.alert('Upload failed', 'No photo URL returned');
+        return;
+      }
 
       if (!user) {
         Alert.alert('Upload failed', 'User not authenticated');
         return;
       }
 
-      
       const { error: insertError } = await supabase.from('observations').insert([
         {
           user_id: user.id,
           note: pendingNote,
           gps_lat: photoLocation ? photoLocation.latitude : null,
           gps_lng: photoLocation ? photoLocation.longitude : null,
-          photo_url: uploadData?.path ?? null,
+          photo_url: photoUrl,
           plan_url: null,
           plan_anchor: anchor ? { x: anchor.x, y: anchor.y } : null,
           photo_date: pendingTakenAt ? pendingTakenAt.split('T')[0] : null, // expects date (YYYY-MM-DD)
-          // created_at will default to now()
         },
       ]);
-
-      
 
       if (insertError) {
         Alert.alert('DB insert failed', insertError.message);
@@ -230,12 +195,10 @@ export default function AddScreen() {
     } catch (err: any) {
       Alert.alert('Upload failed', err.message || 'Unknown error');
     } finally {
-      // setUploading(false);
       resetState();
     }
   };
   
-  // Helper to convert Blob to ArrayBuffer using FileReader
   function blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -244,6 +207,7 @@ export default function AddScreen() {
       reader.readAsArrayBuffer(blob);
     });
   }
+  
   return (
     <View style={styles.container}>
       <Dialog

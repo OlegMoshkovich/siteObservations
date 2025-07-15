@@ -60,11 +60,14 @@ export async function insertObservation(observation: any) {
   return data && data[0];
 }
 
-export async function uploadPhoto(observationId: string, file: File | Blob) {
-  const filePath = `${observationId}/${Date.now()}`;
-  const { error } = await supabase.storage.from('photos').upload(filePath, file);
-  if (error) throw error;
-  return filePath;
+export async function uploadPhoto( arrayBuffer: ArrayBuffer, filename: string) {
+  const { data: uploadData, error: uploadError } = await supabase.storage
+  .from('photos')
+  .upload(filename, arrayBuffer, {
+    contentType: 'image/jpeg',
+  });
+  if (uploadError) throw uploadError;
+  return uploadData?.path || filename;
 }
 
 export async function downloadPhoto(photoUrl: string) {
