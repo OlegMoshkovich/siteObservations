@@ -13,20 +13,23 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // --- Observation and Photo API helpers ---
 
-export async function fetchObservations() {
-  const { data, error } = await supabase.from('observations').select('*');
+export async function fetchUserObservations(userId: string) {
+  if (!userId) throw new Error('User ID is required to fetch user observations');
+  const { data, error } = await supabase
+    .from('observations')
+    .select('*')
+    .eq('user_id', userId);
   if (error) throw error;
   return data || [];
 }
 
-export async function fetchObservationDates() {
-  const { data, error } = await supabase.from('observations').select('photo_date');
+export async function fetchObservationDates( userId: string ) {
+  const { data, error } = await supabase.from('observations').select('*').eq('user_id', userId);
   if (error) throw error;
   const uniqueSortedDates = Array.from(
     new Set(
       (data ?? [])
-        .map((item: any) => item.photo_date)
-        .filter((d: string | null | undefined) => !!d)
+        .map((item: any) => item.created_at)
     )
   ).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
   return uniqueSortedDates;

@@ -32,10 +32,8 @@ export default function AddScreen() {
   const [pendingTakenAt, setPendingTakenAt] = useState<string | null>(null);
 
   const handlePickAndUpload = async () => {
-    console.log('Photo icon pressed');
     setDialogMode('photo');
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    console.log('Media library permission status:', status);
     if (status !== 'granted') {
       Alert.alert('Permission required to access media library!');
       return;
@@ -102,7 +100,6 @@ export default function AddScreen() {
         const { status: locStatus } = await Location.requestForegroundPermissionsAsync();
         if (locStatus === 'granted') {
           const location = await Location.getCurrentPositionAsync({});
-          console.log('location --', location);
           setPhotoLocation({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -125,7 +122,6 @@ export default function AddScreen() {
       const originalResponse = await fetch(pendingImageUri);
       const originalBlob = await originalResponse.blob();
       const originalSize = originalBlob.size;
-      console.log('Original image size:', (originalSize / 1024).toFixed(2), 'KB');
 
       // Compress the image
       const compressed = await ImageManipulator.manipulateAsync(
@@ -137,7 +133,6 @@ export default function AddScreen() {
       const compressedResponse = await fetch(compressed.uri);
       const compressedBlob = await compressedResponse.blob();
       const compressedSize = compressedBlob.size;
-      console.log('Compressed image size:', (compressedSize / 1024).toFixed(2), 'KB');
 
       // Use FileReader to get ArrayBuffer
       const arraybuffer = await blobToArrayBuffer(compressedBlob);
@@ -160,14 +155,6 @@ export default function AddScreen() {
         Alert.alert('Upload failed', 'User not authenticated');
         return;
       }
-
-      console.log('anchor', anchor);
-      console.log('labels', labels);
-      console.log('pendingNote', pendingNote);
-      console.log('photoLocation', photoLocation);
-      console.log('pendingTitle', pendingTitle);
-      console.log('pendingUpload', pendingUpload);
-      // console.log('uploading', uploading);
 
       
       const { error: insertError } = await supabase.from('observations').insert([

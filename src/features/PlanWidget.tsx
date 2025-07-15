@@ -33,7 +33,6 @@ const PlanWidget: React.FC<PlanWidgetProps> = ({ onAnchorChange }) => {
     const anchorPos = { x: locationX / imageWidth, y: locationY / imageHeight };
     setAnchor(anchorPos);
     if (onAnchorChange) onAnchorChange(anchorPos);
-    console.log('Anchor dropped at:', anchorPos);
   };
 
   return (
