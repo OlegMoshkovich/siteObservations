@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -59,19 +59,21 @@ export default function AccessScreen() {
       >
         <View style={styles.dialogContent}>
           <ScrollView style={{ width: '100%' }}>
-            {photos?.map((photo: any) => (
-              <PhotoItem
-                key={photo.id}
-                id={photo.id}
-                dataUrl={photo.dataUrl || ''}
-                note={photo.note}
-                timestamp={photo.created_at ? format(new Date(photo.created_at), 'PPpp') : undefined}
-                anchor={photo.plan_anchor}
-                labels={photo.labels}
-                checked={false}
-                onCheck={() => {}}
-              />
-            ))}
+            {photos
+              ?.filter((photo: any) => photo.created_at.split('T')[0] === selectedDate)
+              .map((photo: any) => (
+                <PhotoItem
+                  key={photo.id}
+                  id={photo.id}
+                  dataUrl={photo.dataUrl || ''}
+                  note={photo.note}
+                  timestamp={photo.created_at ? format(new Date(photo.created_at), 'PPpp') : undefined}
+                  anchor={photo.plan_anchor}
+                  labels={photo.labels}
+                  checked={false}
+                  onCheck={() => {}}
+                />
+              ))}
           </ScrollView>
         </View>
       </Dialog>
