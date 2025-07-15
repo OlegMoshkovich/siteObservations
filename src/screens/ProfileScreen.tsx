@@ -7,8 +7,9 @@ import { useUserStore } from '../state/slices/userSlice';
 
 export default function ProfileScreen() {
   const { setObservationDates, setObservations, setPhotos } = useObservationStore();
-  const { setUser } = useUserStore();
+  const { user, setUser } = useUserStore();
   const [signingOut, setSigningOut] = useState(false);
+  
   
   async function handleSignOut() {
     setSigningOut(true)
@@ -22,6 +23,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={{position: 'absolute', top:240}}>{user?.email}</Text>
       <Button title="Logout" onPress={() => {handleSignOut()}} />   
     </View>
   );
