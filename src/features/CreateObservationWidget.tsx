@@ -21,7 +21,6 @@ const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
   uploading,
   onNoteChange,
   onUpload,
-  onClose,
 }) => {
   // Steps: 1 = photo, 2 = note, 3 = plan, 4 = labels
   const [step, setStep] = useState(1);

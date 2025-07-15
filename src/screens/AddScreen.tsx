@@ -13,6 +13,7 @@ import Dialog from '../components/UI/Dialog';
 import Button from '../components/UI/Button';
 import { exifDateToPostgres } from '../utils/dateUtils';
 import CreateObservationWidget from '../features/CreateObservationWidget';
+import { useUserStore } from '../state/slices/userSlice';
 
 export default function AddScreen() {
   // ...existing state and logic for AddScreen...
@@ -30,14 +31,82 @@ export default function AddScreen() {
   const [savingNote, setSavingNote] = useState(false);
   const [photoLocation, setPhotoLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [pendingTakenAt, setPendingTakenAt] = useState<string | null>(null);
+  const { user } = useUserStore();
 
-  const handlePickAndUpload = async () => {
-    setDialogMode('photo');
+  // Permission helpers
+  const askForLibraryPermission = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permission required to access media library!');
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const askForCameraPermission = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required to access camera!');
+      return false;
+    }
+    return true;
+  };
+
+  const askForLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      // Not alerting here, as location is optional for photo
+      return false;
+    }
+    return true;
+  };
+
+  // Helper to compress an image and return the compressed Blob and its size
+  async function compressImage(imageUri: string): Promise<{ blob: Blob; size: number; uri: string }> {
+    const compressed = await ImageManipulator.manipulateAsync(
+      imageUri,
+      [],
+      { compress: 0.05, format: ImageManipulator.SaveFormat.JPEG }
+    );
+    const compressedResponse = await fetch(compressed.uri);
+    const compressedBlob = await compressedResponse.blob();
+    return { blob: compressedBlob, size: compressedBlob.size, uri: compressed.uri };
+  }
+  
+  // Helper to reset all AddScreen state
+  function resetState() {
+    setPendingImageUri(null);
+    setDialogVisible(false);
+    setPendingTitle('');
+    setPendingNote('');
+    setPendingUpload(false);
+    setPhotoLocation(null);
+    setPendingTakenAt(null);
+    setDialogMode(null);
+    setPendingNoteTitle('');
+    setPendingNoteContent('');
+    setSavingNote(false);
+  }
+
+  // Helper to set state after picking an image
+  function setPickedImageState(imageUri: string, takenAt: string | null) {
+    setPendingImageUri(imageUri);
+    setDialogVisible(true);
+    setPendingTitle('');
+    setPendingNote('');
+    setPendingUpload(false);
+    setPendingTakenAt(takenAt);
+    setDialogMode('photo');
+    setPendingNoteTitle('');
+    setPendingNoteContent('');
+    setSavingNote(false);
+  }
+
+
+  const handlePickAndUpload = async () => {
+    setDialogMode('photo');
+    const hasPermission = await askForLibraryPermission();
+    if (!hasPermission) return;
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -50,37 +119,29 @@ export default function AddScreen() {
       const image = result.assets[0];
       const takenAtRaw = image.exif?.DateTimeOriginal || image.exif?.DateTime || null;
       const takenAt = exifDateToPostgres(takenAtRaw);
-      setPendingTakenAt(takenAt);
-      setPendingImageUri(image.uri);
-      setDialogVisible(true);
-      setPendingTitle('');
-      setPendingNote('');
-      setPendingUpload(false);
+      setPickedImageState(image.uri, takenAt);
       // Get location permission and current location
-      try {
-        const { status: locStatus } = await Location.requestForegroundPermissionsAsync();
-        if (locStatus === 'granted') {
+      const hasLocPermission = await askForLocationPermission();
+      if (hasLocPermission) {
+        try {
           const location = await Location.getCurrentPositionAsync({});
           setPhotoLocation({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
           });
-        } else {
+        } catch (e) {
           setPhotoLocation(null);
         }
-      } catch (e) {
+      } else {
         setPhotoLocation(null);
       }
     }
   };
+
   const handlePickCamera = async () => {
     setDialogMode('photo');
-    // Request camera permission
-    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-    if (cameraStatus !== 'granted') {
-      Alert.alert('Permission required to access camera!');
-      return;
-    }
+    const hasPermission = await askForCameraPermission();
+    if (!hasPermission) return;
 
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -90,29 +151,25 @@ export default function AddScreen() {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const image = result.assets[0];
-      setPendingImageUri(image.uri);
-      setDialogVisible(true);
-      setPendingTitle('');
-      setPendingNote('');
-      setPendingUpload(false);
+      setPickedImageState(image.uri, null);
       // Get location permission and current location
-      try {
-        const { status: locStatus } = await Location.requestForegroundPermissionsAsync();
-        if (locStatus === 'granted') {
+      const hasLocPermission = await askForLocationPermission();
+      if (hasLocPermission) {
+        try {
           const location = await Location.getCurrentPositionAsync({});
           setPhotoLocation({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
           });
-        } else {
+        } catch (e) {
           setPhotoLocation(null);
         }
-      } catch (e) {
+      } else {
         setPhotoLocation(null);
       }
     }
   };
-  // Update handleUpload to accept anchor and labels
+  
   const handleUpload = async ({ anchor, labels }: { anchor: { x: number; y: number } | null; labels: string[] }) => {
     if (!pendingImageUri) return;
     // setUploading(true);
@@ -123,20 +180,12 @@ export default function AddScreen() {
       const originalBlob = await originalResponse.blob();
       const originalSize = originalBlob.size;
 
-      // Compress the image
-      const compressed = await ImageManipulator.manipulateAsync(
-        pendingImageUri,
-        [],
-        { compress: 0.05, format: ImageManipulator.SaveFormat.JPEG }
-      );
-      // Get compressed image size
-      const compressedResponse = await fetch(compressed.uri);
-      const compressedBlob = await compressedResponse.blob();
-      const compressedSize = compressedBlob.size;
+      // Compress the image using the helper
+      const { blob: compressedBlob, size: compressedSize, uri: compressedUri } = await compressImage(pendingImageUri);
 
       // Use FileReader to get ArrayBuffer
       const arraybuffer = await blobToArrayBuffer(compressedBlob);
-      const fileExt = compressed.uri.split('.').pop()?.toLowerCase() ?? 'jpeg';
+      const fileExt = compressedUri.split('.').pop()?.toLowerCase() ?? 'jpeg';
       const filename = `${Date.now()}.${fileExt}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -150,7 +199,7 @@ export default function AddScreen() {
         return;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
+
       if (!user) {
         Alert.alert('Upload failed', 'User not authenticated');
         return;
@@ -182,40 +231,25 @@ export default function AddScreen() {
       Alert.alert('Upload failed', err.message || 'Unknown error');
     } finally {
       // setUploading(false);
-      setPendingImageUri(null);
-      setDialogVisible(false);
-      setPendingTitle('');
-      setPendingNote('');
-      setPendingUpload(false);
-      setPhotoLocation(null);
-      setPendingTakenAt(null);
+      resetState();
     }
   };
+  
   // Helper to convert Blob to ArrayBuffer using FileReader
-function blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as ArrayBuffer);
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(blob);
-  });
-}
+  function blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as ArrayBuffer);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(blob);
+    });
+  }
   return (
     <View style={styles.container}>
       <Dialog
         visible={dialogVisible}
         height={90}
-        onClose={() => {
-          setDialogVisible(false);
-          setPendingImageUri(null);
-          setPendingTitle('');
-          setPendingNote('');
-          setPendingUpload(false);
-          setDialogMode(null);
-          setPendingNoteTitle('');
-          setPendingNoteContent('');
-          setSavingNote(false);
-        }}
+        onClose={resetState}
         headerProps={{
           title: 'Create observation',
           style: { paddingHorizontal: 16 },
@@ -223,17 +257,7 @@ function blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
           bottomBorder: false,
           titleStyle: { color: 'black' },
           rightActionElement: 'Close',
-          onRightAction: () => {
-            setDialogVisible(false);
-            setPendingImageUri(null);
-            setPendingTitle('');
-            setPendingNote('');
-            setPendingUpload(false);
-            setDialogMode(null);
-            setPendingNoteTitle('');
-            setPendingNoteContent('');
-            setSavingNote(false);
-          },
+          onRightAction: resetState,
         }}
       >
          {dialogMode === 'photo' ? (
