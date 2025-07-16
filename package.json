@@ -29,7 +29,8 @@
     "react-navigation": "^5.0.0",
     "rneui": "^1.0.0-stable.0",
     "supabase": "^2.30.4",
-    "zustand": "^4.5.7"
+    "zustand": "^4.5.7",
+    "expo-updates": "~0.28.17"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

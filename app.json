@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "siteObservations",
-    "slug": "siteObservations",
+    "slug": "cogram",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,10 +24,25 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "permissions": ["ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "489e5179-5f0f-4347-82e8-ab7c86681a38"
+      }
+    },
+    "owner": "analogfuture",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/489e5179-5f0f-4347-82e8-ab7c86681a38"
     }
   }
 }
