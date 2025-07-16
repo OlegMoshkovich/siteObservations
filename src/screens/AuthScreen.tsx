@@ -48,7 +48,8 @@ export default function AuthScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={{ flex: 1 }}>
         <View style={styles.container}> 
-            <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" />
+            {/* <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" /> */}
+            <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Clone:it</Text>
             <TextInput
               onChangeText={(text: string) => setEmail(text)}
               value={email}
@@ -76,9 +77,9 @@ export default function AuthScreen() {
           >
            <View style={styles.container}>
             {/* <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" /> */}
-              <View style={{ flexDirection: 'column', gap: 12, alignItems: 'center', marginTop: 30, marginBottom: 20 }}>  
+              {/* <View style={{ flexDirection: 'column', gap: 12, alignItems: 'center', marginTop: 30, marginBottom: 20 }}>   */}
                 <Text style={{ fontSize: 16, textAlign: 'center' }}>Please Sign up</Text>
-              </View>
+              {/* </View> */}
               <TextInput
                 onChangeText={setSignUpEmail}
                 value={signUpEmail}
