@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { TextInputProps } from '../../types/types';
+import theme from '../theme';
 
 const EyeIcon = ({ visible }: { visible: boolean }) => (
   <Text style={{ fontSize: 18, color: '#888', paddingHorizontal: 8 }}>
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#333',
+    color: '#333',  
   },
   inputWrapper: {
     position: 'relative',
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
+    borderRadius: theme.borderRadius,
     width: 300,
     borderColor: '#ddd',
     padding: 12,

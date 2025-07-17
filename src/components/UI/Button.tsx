@@ -5,6 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { ButtonProps } from '../../types/types';
+import theme from '../theme';
 
 const Button: React.FC<ButtonProps> = ({
   title,
@@ -57,10 +58,10 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#000000',
+    backgroundColor: theme.colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 0,
+    borderRadius: theme.borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   disabled: {
-    backgroundColor: '#000000',
+    backgroundColor: theme.colors.primary,
   },
   outlinedDisabled: {
     borderColor: '#ccc',
