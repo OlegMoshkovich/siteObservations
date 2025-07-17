@@ -6,7 +6,6 @@ import {
   Text,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
 import * as Location from 'expo-location';
 import { supabase, uploadPhoto } from '../utils/supabase';
 import Dialog from '../components/UI/Dialog';
@@ -15,6 +14,8 @@ import { exifDateToPostgres } from '../utils/dateUtils';
 import CreateObservationWidget from '../features/CreateObservationWidget';
 import { useUserStore } from '../state/slices/userSlice';
 import { useObservationStore } from '../state/slices/observationSlice';
+import { askForLibraryPermission, askForCameraPermission, askForLocationPermission } from '../utils/permissions';
+import { compressImage } from '../utils/imageUtils';
 
 export default function AddScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -27,44 +28,6 @@ export default function AddScreen() {
   const { observations, setObservations, photos, setPhotos } = useObservationStore();
 
   const { user } = useUserStore();
-
-  const askForLibraryPermission = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission required to access media library!');
-      return false;
-    }
-    return true;
-  };
-
-  const askForCameraPermission = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission required to access camera!');
-      return false;
-    }
-    return true;
-  };
-
-  const askForLocationPermission = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      // Not alerting here, as location is optional for photo
-      return false;
-    }
-    return true;
-  };
-
-  async function compressImage(imageUri: string): Promise<{ blob: Blob; size: number; uri: string }> {
-    const compressed = await ImageManipulator.manipulateAsync(
-      imageUri,
-      [],
-      { compress: 0.05, format: ImageManipulator.SaveFormat.JPEG }
-    );
-    const compressedResponse = await fetch(compressed.uri);
-    const compressedBlob = await compressedResponse.blob();
-    return { blob: compressedBlob, size: compressedBlob.size, uri: compressed.uri };
-  }
   
   function resetState() {
     setPendingImageUri(null);
