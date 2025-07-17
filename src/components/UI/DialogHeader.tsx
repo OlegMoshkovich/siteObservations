@@ -4,26 +4,9 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ViewStyle,
-  TextStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-interface DialogHeaderProps {
-  title: string | React.ReactNode;
-  backAction?: boolean;
-  onBackAction?: () => void;
-  titleButtonComponent?: React.ReactNode;
-  rightActionElement?: string | React.ReactNode;
-  onRightAction?: () => void;
-  style?: ViewStyle;
-  titleStyle?: TextStyle;
-  headerAsButton?: boolean;
-  onHeaderPress?: () => void;
-  bottomBorder?: boolean;
-  titleFontSize?: number;
-  rightActionFontSize?: number;
-}
+import { DialogHeaderProps } from "../../types/types";
 
 const DialogHeader: React.FC<DialogHeaderProps> = ({
   title,
@@ -151,5 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export type { DialogHeaderProps };
 export default DialogHeader;

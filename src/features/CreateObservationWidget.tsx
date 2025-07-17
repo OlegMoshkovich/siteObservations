@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Image, StyleSheet } from 'react-native';
 import { StepNavigationButtons } from './StepNavigation';
 import PlanWidget from './PlanWidget';
-
-interface CreateObservationWidgetProps {
-  visible: boolean;
-  imageUri: string | null;
-  note: string;
-  uploading: boolean;
-  onNoteChange: (text: string) => void;
-  onUpload: (data: { anchor: { x: number; y: number } | null; labels: string[] }) => void;
-  onClose: () => void;
-}
+import { CreateObservationWidgetProps } from '../types/types';
 
 const CreateObservationWidget: React.FC<CreateObservationWidgetProps> = ({
   visible,

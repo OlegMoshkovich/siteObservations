@@ -6,18 +6,8 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import DialogHeader, { type DialogHeaderProps } from "./DialogHeader";
-
-interface DialogProps {
-  visible: boolean;
-  onClose: () => void;
-  children?: React.ReactNode;
-  height?: number | `${number}%`;
-  showCloseButton?: boolean;
-  headerProps?: DialogHeaderProps;
-  enableCloseOnBackgroundPress?: boolean;
-  animationType?: 'slide' | 'fade' | 'none';
-}
+import DialogHeader from "./DialogHeader";
+import { DialogProps, DialogHeaderProps } from "../../types/types";
 
 const Dialog: React.FC<DialogProps> = ({
   visible = false,

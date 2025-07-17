@@ -1,17 +1,8 @@
 import { View } from "react-native";
 import Button from "../components/UI/Button";
+import { StepNavigationButtonsProps } from "../types/types";
 
-export const StepNavigationButtons: React.FC<{
-  onBack?: () => void;
-  onNext?: () => void;
-  backDisabled?: boolean;
-  nextDisabled?: boolean;
-  showBack?: boolean;
-  showNext?: boolean;
-  nextLabel?: string;
-  backLabel?: string;
-  style?: any;
-}> = ({
+export const StepNavigationButtons: React.FC<StepNavigationButtonsProps> = ({
   onBack = () => {},
   onNext = () => {},
   backDisabled,

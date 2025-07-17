@@ -5,12 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-
-interface CheckboxProps {
-  label?: string;
-  checked: boolean;
-  onToggle: (checked: boolean) => void;
-}
+import { CheckboxProps } from '../../types/types';
 
 const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onToggle }) => {
   return (

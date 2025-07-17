@@ -6,15 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-
-interface TextInputProps {
-  label?: string;
-  value: string;
-  multiline?: boolean;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  password?: boolean;
-}
+import { TextInputProps } from '../../types/types';
 
 const EyeIcon = ({ visible }: { visible: boolean }) => (
   <Text style={{ fontSize: 18, color: '#888', paddingHorizontal: 8 }}>

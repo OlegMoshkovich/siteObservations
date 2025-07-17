@@ -1,14 +1,5 @@
 import { create } from 'zustand';
-
-export interface ObservationState {
-  observationDates: string[] | null;
-  observations: any[] | null;
-  setObservationDates: (observationDates: string[]) => void;
-  setObservations: (observations: any[]) => void;
-  clearObservationDates: () => void;
-  photos: any[] | null;
-  setPhotos: (photos: any[]) => void;
-}
+import { ObservationState } from '../../types/types';
 
 export const useObservationStore = create<ObservationState>((set) => ({
   observationDates: null,

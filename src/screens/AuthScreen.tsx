@@ -48,10 +48,10 @@ export default function AuthScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={{ flex: 1 }}>
         <View style={styles.container}> 
-            {/* <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" /> */}
-            <View style={{ flexDirection: 'column', gap: 12, alignItems: 'center', marginTop: 30, marginBottom: 20 }}>  
+            <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" />
+            {/* <View style={{ flexDirection: 'column', gap: 12, alignItems: 'center', marginTop: 30, marginBottom: 20 }}>  
                 <Text style={{ fontSize: 16, textAlign: 'center',  }}>Simple prototype</Text>
-              </View>
+              </View> */}
             <TextInput
               onChangeText={(text: string) => setEmail(text)}
               value={email}

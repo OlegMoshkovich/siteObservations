@@ -7,18 +7,7 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-
-interface DropdownOption {
-  label: string;
-  value: string;
-}
-
-interface DropdownProps {
-  label: string;
-  options: DropdownOption[];
-  selectedValue: string;
-  onSelect: (value: string) => void;
-}
+import { DropdownProps, DropdownOption } from '../../types/types';
 
 const Dropdown: React.FC<DropdownProps> = ({
   label,

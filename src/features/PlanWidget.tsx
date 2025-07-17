@@ -3,12 +3,9 @@ import { View, Image, Dimensions, TouchableWithoutFeedback } from 'react-native'
 import ImageZoom from 'react-native-image-pan-zoom';
 import ViewShot from 'react-native-view-shot';
 import Dialog from '../components/UI/Dialog';
+import { PlanWidgetProps } from '../types/types';
 
 const { width, height } = Dimensions.get('window');
-
-interface PlanWidgetProps {
-  onAnchorChange?: (anchor: { x: number; y: number } | null) => void;
-}
 
 const PlanWidget: React.FC<PlanWidgetProps> = ({ onAnchorChange }) => {
   const [dialogVisible, setDialogVisible] = useState(false);

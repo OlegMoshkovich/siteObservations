@@ -1,21 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-
-
-interface PhotoItemProps {
-  id: string;
-  dataUrl: string;
-  title?: string;
-  note?: string;
-  checked: boolean;
-  latitude?: number;
-  longitude?: number;
-  onCheck: (checked: boolean) => void;
-  timestamp?: string;
-  anchor?: { x: number; y: number } | null;
-  labels?: string[];
-  takenAt?: string | null;
-}
+import { PhotoItemProps } from '../types/types';
 
 const PhotoItem: React.FC<PhotoItemProps> = ({ id, dataUrl, title, note, checked, latitude, longitude, onCheck, timestamp, anchor, labels, takenAt }) => {
   if (!dataUrl) return null;

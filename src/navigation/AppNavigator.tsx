@@ -10,9 +10,10 @@ import { Text } from 'react-native';
 import { useUserStore } from '../state/slices/userSlice';
 import { downloadPhoto, fetchObservationDates, fetchUserObservations } from '../utils/supabase';
 import { useObservationStore } from '../state/slices/observationSlice';
+import { TabNavigatorProps } from '../types/types';
 const Tab = createBottomTabNavigator();
 
-export default function TabNavigator({ session }: { session: Session | null }) {
+export default function TabNavigator({ session }: TabNavigatorProps) {
   const { user, setUser } = useUserStore();
   const { setObservationDates , setObservations, setPhotos } = useObservationStore();
   useEffect(() => {

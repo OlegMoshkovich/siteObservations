@@ -3,16 +3,8 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  ViewStyle,
 } from 'react-native';
-
-interface ButtonProps {
-  title: string;
-  onPress: () => void;
-  style?: ViewStyle;
-  disabled?: boolean;
-  variant?: 'outlined' | 'default' | 'text';
-}
+import { ButtonProps } from '../../types/types';
 
 const Button: React.FC<ButtonProps> = ({
   title,

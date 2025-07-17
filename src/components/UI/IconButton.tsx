@@ -4,13 +4,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-
-interface IconButtonProps {
-  iconName: string;
-  variant: 'filled' | 'outlined';
-  onPress: () => void;
-  size?: number;
-}
+import { IconButtonProps } from '../../types/types';
 
 const IconButton: React.FC<IconButtonProps> = ({
   iconName,

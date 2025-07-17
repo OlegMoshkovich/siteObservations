@@ -1,8 +1,6 @@
 // IMPORTANT: Set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient } from '@supabase/supabase-js'
-import { formatObservationDate } from './dateUtils';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@env';
 
 
 const supabaseUrl = 'https://euetokzwpljkjpwiypyk.supabase.co'

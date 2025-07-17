@@ -1,10 +1,5 @@
 import { create } from 'zustand';
-
-export interface UserState {
-  user: any | null;
-  setUser: (user: any) => void;
-  clearUser: () => void;
-}
+import { UserState } from '../../types';
 
 export const useUserStore = create<UserState>((set) => ({
   user: null,
