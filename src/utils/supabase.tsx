@@ -1,11 +1,11 @@
 // IMPORTANT: Set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient } from '@supabase/supabase-js'
-
+import { Database } from '../types/supabase'
 
 const supabaseUrl = 'https://euetokzwpljkjpwiypyk.supabase.co'
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1ZXRva3p3cGxqa2pwd2l5cHlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI0MjQ2MjQsImV4cCI6MjA2ODAwMDYyNH0._70bzr5XfX9nVOKZBYHxlYgNBZ9WSgS-3T9Fl4mNwwo'
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
@@ -16,7 +16,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // --- Observation and Photo API helpers ---
 
-export async function fetchUserObservations(userId: string) {
+export async function fetchUserObservations(userId: string): Promise<Observation[]> {
   if (!userId) throw new Error('User ID is required to fetch user observations');
   const { data, error } = await supabase
     .from('observations')
@@ -55,10 +55,12 @@ export async function fetchObservationDates(userId: string) {
   return uniqueDateStrings;
 }
 
-export async function insertObservation(observation: any) {
+import { ObservationInsert, Observation } from '../types/supabase';
+
+export async function insertObservation(observation: ObservationInsert): Promise<Observation | null> {
   const { data, error } = await supabase.from('observations').insert([observation]).select();
   if (error) throw error;
-  return data && data[0];
+  return data && data[0] || null;
 }
 
 export async function uploadPhoto( arrayBuffer: ArrayBuffer, filename: string) {

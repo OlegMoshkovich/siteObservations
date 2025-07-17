@@ -1,5 +1,6 @@
 import React from 'react';
 import { ViewStyle, TextStyle } from 'react-native';
+import { Observation } from './supabase';
 
 // ============================================================================
 // STATE MANAGEMENT TYPES
@@ -18,12 +19,12 @@ export interface UIState {
 
 export interface ObservationState {
   observationDates: string[] | null;
-  observations: any[] | null;
+  observations: Observation[] | null;
   setObservationDates: (observationDates: string[]) => void;
-  setObservations: (observations: any[]) => void;
+  setObservations: (observations: Observation[]) => void;
   clearObservationDates: () => void;
-  photos: any[] | null;
-  setPhotos: (photos: any[]) => void;
+  photos: Observation[] | null;
+  setPhotos: (photos: Observation[]) => void;
 }
 
 // ============================================================================
@@ -193,6 +194,9 @@ export interface SupabaseConfig {
   url: string;
   anonKey: string;
 }
+
+// Re-export Supabase database types
+export type { Database, Observation, ObservationInsert, ObservationUpdate, Profile, ProfileInsert, ProfileUpdate } from './supabase';
 
 // ============================================================================
 // UTILITY TYPES
