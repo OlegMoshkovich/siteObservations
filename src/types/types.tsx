@@ -40,6 +40,7 @@ export interface ButtonProps {
   onPress: () => void;
   style?: ViewStyle;
   disabled?: boolean;
+  loading?: boolean;
   variant?: 'outlined' | 'default' | 'text';
 }
 

@@ -64,7 +64,7 @@ export default function AuthScreen() {
               placeholder="Password"
             />
           <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
-            <Button title="Sign in" onPress={signInWithEmail} disabled={loading || !email || !password} />
+            <Button title="Sign in" onPress={signInWithEmail} loading={loading} disabled={!email || !password} />
             <Button title="Sign up" 
             variant="text" 
             onPress={() => setShowSignUpDialog(true)} />
@@ -97,7 +97,8 @@ export default function AuthScreen() {
                 <Button
                   title="Sign up"
                   onPress={signUpWithEmail}
-                  disabled={loading || !signUpEmail || !signUpPassword}
+                  loading={loading}
+                  disabled={!signUpEmail || !signUpPassword}
                 />
                 <Button
                   title="Cancel"
