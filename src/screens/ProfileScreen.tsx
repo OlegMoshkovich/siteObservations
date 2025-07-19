@@ -32,7 +32,7 @@ export default function ProfileScreen() {
      
       <Text >{user?.email}</Text>
       <Button title="logout" onPress={() => {handleSignOut()}} />
-      <Button title={showTheme ?  "close theme" : "open theme"} variant="text" onPress={() => setShowTheme(!showTheme)} />           
+      {/* <Button title="🎨" variant="text" onPress={() => setShowTheme(!showTheme)} />            */}
 
       
       </View>
@@ -45,13 +45,13 @@ export default function ProfileScreen() {
               size={30}
             />
             <CircleButton 
-              color="#4CAF50" 
-              onPress={() => setPrimaryColor('#4CAF50')} 
+              color="#1eabe0" 
+              onPress={() => setPrimaryColor('#1eabe0')} 
               size={30}
             />
             <CircleButton 
-              color="#2196F3" 
-              onPress={() => setPrimaryColor('#2196F3')} 
+              color="#25d366" 
+              onPress={() => setPrimaryColor('#25d366')} 
               size={30}
             />
           </View>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   elementsContainer: {
-    height: '30%',
+    height: '20%',
     width: '50%',
     flexDirection: 'column',
     alignItems: 'center',
