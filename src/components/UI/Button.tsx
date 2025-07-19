@@ -5,7 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { ButtonProps } from '../../types/types';
-import theme from '../theme';
+import { useTheme } from '../theme';
 
 const Button: React.FC<ButtonProps> = ({
   title,
@@ -14,20 +14,21 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   variant = 'default',
 }) => {
+  const theme = useTheme();
   const isOutlined = variant === 'outlined';
   const isText = variant === 'text';
 
   return (
     <TouchableOpacity
       style={[
-        !isText && styles.button,
-        isOutlined && styles.outlined,
+        !isText && { ...styles.button, backgroundColor: theme.colors.primary, borderRadius: theme.borderRadius },
+        isOutlined && { ...styles.outlined, borderColor: theme.colors.primary },
         disabled && (
           isText
             ? styles.textDisabled
             : isOutlined
               ? styles.outlinedDisabled
-              : styles.disabled
+              : { ...styles.disabled, backgroundColor: theme.colors.primary }
         ),
         isText && styles.textButton,
         style,
@@ -58,10 +59,9 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: theme.borderRadius,
+    borderRadius: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   disabled: {
-    backgroundColor: theme.colors.primary,
+    // backgroundColor will be set dynamically
+    opacity: 0.5,
   },
   outlinedDisabled: {
     borderColor: '#ccc',
@@ -79,16 +80,15 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
   },
   outlinedText: {
     color: '#000',
   },
   disabledText: {
-    color: '#999',
+    color: '#000000',
   },
   outlinedDisabledText: {
-    color: '#ccc',
+    color: '#000000',
   },
   textButton: {
     backgroundColor: 'transparent',
@@ -101,13 +101,11 @@ const styles = StyleSheet.create({
   },
   textVariant: {
     color: '#000',
-    fontWeight: '600',
   },
   textVariantDisabled: {
-    color: '#ccc',
+    color: '#000000',
   },
   textDisabled: {
-    // For disabled text button container, no background
     backgroundColor: 'transparent',
   },
 });

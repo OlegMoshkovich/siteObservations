@@ -15,6 +15,10 @@ export interface UserState {
 export interface UIState {
   selectedDate: string | null;
   setSelectedDate: (selectedDate: string | null) => void;
+  primaryColor: string;
+  setPrimaryColor: (primaryColor: string) => void;
+  borderRadius: number;
+  setBorderRadius: (borderRadius: number) => void;
 }
 
 export interface ObservationState {
@@ -44,6 +48,15 @@ export interface IconButtonProps {
   variant: 'filled' | 'outlined';
   onPress: () => void;
   size?: number;
+}
+
+export interface CircleButtonProps {
+  onPress: () => void;
+  color?: string;
+  size?: number;
+  style?: ViewStyle;
+  disabled?: boolean;
+  children?: React.ReactNode;
 }
 
 export interface TextInputProps {
