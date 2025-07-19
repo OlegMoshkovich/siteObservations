@@ -215,8 +215,8 @@ export default function AddScreen() {
         )}
       </Dialog>
       <View style={{ width: '86%', flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
-        <Button title="Upload photo" onPress={handlePickAndUpload} />
-        <Button title="Take photo" onPress={handlePickCamera} />
+        <Button title="upload photo" onPress={handlePickAndUpload} />
+        <Button title="snap photo" onPress={handlePickCamera} />
       </View>
     </View>
   );

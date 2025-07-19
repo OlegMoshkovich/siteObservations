@@ -32,7 +32,7 @@ export default function ProfileScreen() {
      
       <Text >{user?.email}</Text>
       <Button title="logout" onPress={() => {handleSignOut()}} />
-      <Button title={showTheme ?  "hide theme" : "show theme"} variant="text" onPress={() => setShowTheme(!showTheme)} />           
+      <Button title={showTheme ?  "close theme" : "open theme"} variant="text" onPress={() => setShowTheme(!showTheme)} />           
 
       
       </View>
