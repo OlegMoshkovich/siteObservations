@@ -60,11 +60,11 @@ export default function TabNavigator({ session }: TabNavigatorProps) {
         tabBarIcon: ({ color, size }) => {
           let emoji = '';
           if (route.name === 'Add') {
-            emoji = '➕';
-          } else if (route.name === 'Access') {
-            emoji = '🔍';
+            emoji = '📷';
+          } else if (route.name === 'Library') {
+            emoji = '🗂️';
           } else if (route.name === 'Profile') {
-            emoji = '👤';
+            emoji = '⚙️';
           }
           return (
             <Text
@@ -86,7 +86,7 @@ export default function TabNavigator({ session }: TabNavigatorProps) {
       <Tab.Screen name="Add">
         {() => <AddScreen />}
       </Tab.Screen>
-      <Tab.Screen name="Access">
+      <Tab.Screen name="Library">
         {() => <AccessScreen />}
       </Tab.Screen>
       <Tab.Screen name="Profile">

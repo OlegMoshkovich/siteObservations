@@ -11,7 +11,7 @@ import theme from '../theme';
 
 const EyeIcon = ({ visible }: { visible: boolean }) => (
   <Text style={{ fontSize: 18, color: '#888', paddingHorizontal: 8 }}>
-    {visible ? '👁️' : '🙈'}
+    {visible ? '😳' : '😑'}
   </Text>
 );
 
