@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   disabledText: {
-    color: '#000000',
+    color: '#fff',
   },
   outlinedDisabledText: {
     color: '#000000',

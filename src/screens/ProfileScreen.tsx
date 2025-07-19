@@ -13,6 +13,7 @@ export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
   const { setPrimaryColor, borderRadius, setBorderRadius } = useUIStore();
   const [signingOut, setSigningOut] = useState(false);
+  const [showTheme, setShowTheme] = useState(false);
   
   
   async function handleSignOut() {
@@ -30,9 +31,13 @@ export default function ProfileScreen() {
       <View style={styles.elementsContainer}>
      
       <Text >{user?.email}</Text>
-      <Button title="Logout" onPress={() => {handleSignOut()}} />      
+      <Button title="logout" onPress={() => {handleSignOut()}} />
+      <Button title={showTheme ?  "hide theme" : "show theme"} variant="text" onPress={() => setShowTheme(!showTheme)} />           
 
-         <View style={styles.themeContainer}>
+      
+      </View>
+      {showTheme && (
+        <View style={styles.themeContainer}>
           <View style={styles.circleButtonsContainer}>
             <CircleButton 
               color="#000000" 
@@ -61,8 +66,7 @@ export default function ProfileScreen() {
             thumbTintColor={useUIStore.getState().primaryColor}
           />
         </View>
-      </View>
-      
+      )}
     
     </View>
   );
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   elementsContainer: {
-    height: '40%',
+    height: '30%',
     width: '50%',
     flexDirection: 'column',
     alignItems: 'center',
@@ -88,13 +92,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  
   themeContainer: {
+    width: '40%',
+    position: 'absolute',
+    bottom: 120,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
-
     height: 90,
   },
 });

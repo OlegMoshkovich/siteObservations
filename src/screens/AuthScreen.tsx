@@ -55,17 +55,17 @@ export default function AuthScreen() {
             <TextInput
               onChangeText={(text: string) => setEmail(text)}
               value={email}
-              placeholder="Email"
+              placeholder="email"
             />
             <TextInput
               onChangeText={(text: string) => setPassword(text)}
               value={password}
               password={true}
-              placeholder="Password"
+              placeholder="password"
             />
           <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
-            <Button title="Sign in" onPress={signInWithEmail} loading={loading} disabled={!email || !password} />
-            <Button title="Sign up" 
+            <Button title="sign in" onPress={signInWithEmail} loading={loading} disabled={!email || !password} />
+            <Button title="sign up" 
             variant="text" 
             onPress={() => setShowSignUpDialog(true)} />
           </View>
@@ -80,28 +80,28 @@ export default function AuthScreen() {
            <View style={styles.container}>
             {/* <Image source={require('../../assets/cogram.png')} style={{ width: 100, alignSelf: 'center' }} resizeMode="contain" /> */}
               <View style={{ flexDirection: 'column', gap: 12, alignItems: 'center', marginTop: 30, marginBottom: 20 }}>  
-                <Text style={{ fontSize: 16, textAlign: 'center' }}>Please Sign up</Text>
+                <Text style={{ fontSize: 16, textAlign: 'center' }}>please sign up</Text>
               </View>
               <TextInput
                 onChangeText={setSignUpEmail}
                 value={signUpEmail}
-                placeholder="Email"
+                placeholder="email"
               />
               <TextInput
                 onChangeText={setSignUpPassword}
                 value={signUpPassword}
-                placeholder="Password"
+                placeholder="password"
                 password={true}
               />
               <View style={{ flexDirection: 'column', gap: 12, marginTop: 12 }}>
                 <Button
-                  title="Sign up"
+                  title="sign up"
                   onPress={signUpWithEmail}
                   loading={loading}
                   disabled={!signUpEmail || !signUpPassword}
                 />
                 <Button
-                  title="Cancel"
+                  title="cancel"
                   variant="text"
                   onPress={() => setShowSignUpDialog(false)}
                 />
